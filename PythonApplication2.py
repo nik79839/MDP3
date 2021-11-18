@@ -11,12 +11,12 @@ from pprint import pprint
 vector = pd.read_csv(r'C:\Users\otrok\Downloads\vector.csv', delimiter = ',')
 #Читаем режим и задаем шаблоны.
 rastr = win32com.client.Dispatch('Astra.Rastr')
-Shbl_ut = "C:\Program Files (x86)\RastrWin3\RastrWin3\SHABLON\траектория утяжеления.ut2"
-Shbl_sech = "C:\Program Files (x86)\RastrWin3\RastrWin3\SHABLON\сечения.sch"
-Shbl_reg = "C:\Program Files (x86)\RastrWin3\RastrWin3\SHABLON\режим.rg2"
-rastr.Load(1, r'C:\Users\otrok\Downloads\regime (2).rg2',Shbl_reg)
-rastr.NewFile(Shbl_ut)
-rastr.NewFile(Shbl_sech)
+shbl_ut = "C:\Program Files (x86)\RastrWin3\RastrWin3\SHABLON\траектория утяжеления.ut2"
+shbl_sech = "C:\Program Files (x86)\RastrWin3\RastrWin3\SHABLON\сечения.sch"
+shbl_reg = "C:\Program Files (x86)\RastrWin3\RastrWin3\SHABLON\режим.rg2"
+rastr.Load(1, r'C:\Users\otrok\Downloads\regime (2).rg2',shbl_reg)
+rastr.NewFile(shbl_ut)
+rastr.NewFile(shbl_sech)
 ut_table = rastr.Tables('ut_node')
 node_table = rastr.Tables('node')
 vetv_table = rastr.Tables('vetv')
@@ -36,7 +36,7 @@ grline_table = rastr.Tables('grline')
 sechen_table = rastr.Tables('sechen')
 grline_table.size = len(flowgate)
 sechen_table.size = 1
-sechen_table.Cols('ns').SetZ(0,1)
+sechen_table.Cols('ns').SetZ(0, 1)
 index = 0
 for k in flowgate.keys():
     grline_table.Cols('ip').SetZ(index, flowgate[k]['ip'])
@@ -57,8 +57,8 @@ print("МДП по 1 критерию", MDP1)
 
 #2 критерий по U в нормальном режиме.
 print("----------------КРИТЕРИЙ ПО U В НОРМАЛЬНОМ РЕЖИМЕ-------------------- ")
-rastr.Load(3, r'C:\Users\otrok\Downloads\regime (2).rg2',Shbl_reg)
-MDP_Func.worsening_U(rastr, node_table)
+rastr.Load(3, r'C:\Users\otrok\Downloads\regime (2).rg2',shbl_reg)
+MDP_Func.worsening_U(rastr)
 if abs(sechen_table.Cols('psech').Z(0)) == limit_overflow:
     print('Предел по напряжениям по 2 критерию не достигнут')
 else:
@@ -72,11 +72,11 @@ limit_overflow2 = []
 doavar_overflow = []
 for k in faults.keys():
     fault=0
-    MDP_Func.faults(rastr, faults, vetv_table, Shbl_reg, k, fault)
+    MDP_Func.faults(rastr, faults, vetv_table, shbl_reg, k, fault)
     MDP_Func.worsening_norm(rastr)
     limit_overflow2.append(abs(sechen_table.Cols('psech').Z(0)))
     limit_overflow3=abs(sechen_table.Cols('psech').Z(0))
-    rastr.Load(3, r'C:\Users\otrok\Downloads\regime (2).rg2',Shbl_reg)
+    rastr.Load(3, r'C:\Users\otrok\Downloads\regime (2).rg2',shbl_reg)
     vetv_table.Cols('sta').SetZ(fault, 1)
     rastr.rgm('')
     kd = rastr.step_ut("index")
@@ -96,12 +96,12 @@ print("МДП по критерию P в ПАР -", MDP3 )
 
 #4 критерий по U в ПАР.
 print("----------------КРИТЕРИЙ ПО U В ПАР-------------------- ")
-rastr.Load(3, r'C:\Users\otrok\Downloads\regime (2).rg2', Shbl_reg)
+rastr.Load(3, r'C:\Users\otrok\Downloads\regime (2).rg2', shbl_reg)
 limit_overflow3 = []
 doavar_overflow2 = []
 for k in faults.keys():
-    MDP_Func.faults(rastr, faults, vetv_table, Shbl_reg, k, fault)
-    MDP_Func.worsening_U(rastr, node_table)
+    MDP_Func.faults(rastr, faults, vetv_table, shbl_reg, k, fault)
+    MDP_Func.worsening_U(rastr)
     limit_overflow3.append(abs(sechen_table.Cols('psech').Z(0)))
     vetv_table.Cols('sta').SetZ(fault, 0)
     rastr.rgm('')
@@ -110,36 +110,36 @@ limit_overflow3 = [round(v, 2) for v in limit_overflow2]
 doavar_overflow2 = [round(v, 2) for v in doavar_overflow2]
 print("Послеаварийный переток U-", limit_overflow3)
 print("Доаварийный переток U-", doavar_overflow2)
-print("МДП по критерию U в ПАР -", min(doavar_overflow2)-nereg )
+print("МДП по критерию U в ПАР -", min(doavar_overflow2) - nereg )
 MDP4 = min(doavar_overflow2) - nereg
 
 #5 критерий по I в нормальном режиме.
 print("----------------КРИТЕРИЙ ПО I В НОРМАЛЬНОМ РЕЖИМЕ-------------------- ")
-rastr.Load(3, r'C:\Users\otrok\Downloads\regime (2).rg2', Shbl_reg)
-MDP_Func.worsening_I(rastr,'i_dop_r', vetv_table)
+rastr.Load(3, r'C:\Users\otrok\Downloads\regime (2).rg2', shbl_reg)
+MDP_Func.worsening_I(rastr,'i_dop_r')
 if abs(sechen_table.Cols('psech').Z(0)) == limit_overflow:
     print('Предел не достигнут')
 else:
-    print("МДП по 5 критерию-",abs(sechen_table.Cols('psech').Z(0))-nereg)
+    print("МДП по 5 критерию-",abs(sechen_table.Cols('psech').Z(0)) - nereg)
 MDP5 = abs(sechen_table.Cols('psech').Z(0))-nereg
 
 #6 критерий по I в ПАР.
 print("----------------КРИТЕРИЙ ПО I В ПАР-------------------- ")
-rastr.Load(3, r'C:\Users\otrok\Downloads\regime (2).rg2', Shbl_reg)
+rastr.Load(3, r'C:\Users\otrok\Downloads\regime (2).rg2', shbl_reg)
 limit_overflow4 = []
 doavar_overflow3 = []
 for k in faults.keys():
-    MDP_Func.faults(rastr, faults, vetv_table, Shbl_reg, k, fault)
-    MDP_Func.worsening_I(rastr, 'i_dop_r_av', vetv_table)
+    MDP_Func.faults(rastr, faults, shbl_reg, k, fault)
+    MDP_Func.worsening_I(rastr, 'i_dop_r_av')
     limit_overflow4.append(abs(sechen_table.Cols('psech').Z(0)))
-    vetv_table.Cols('sta').SetZ(fault,0)
+    vetv_table.Cols('sta').SetZ(fault, 0)
     rastr.rgm('')
     doavar_overflow3.append(abs(sechen_table.Cols('psech').Z(0)))
 limit_overflow3 = [round(v, 2) for v in limit_overflow3]
 doavar_overflow3 = [round(v, 2) for v in doavar_overflow3]
-MDP6 = min(doavar_overflow3)-nereg
+MDP6 = min(doavar_overflow3) - nereg
 print("Послеаварийный переток I-", limit_overflow4)
 print("Доаварийный переток I-", doavar_overflow3)
-print("МДП по критерию I в ПАР -", min(doavar_overflow3)-nereg )
+print("МДП по критерию I в ПАР -", min(doavar_overflow3) - nereg )
 print("-----------------------РЕЗУЛЬТИРУЮЩИЙ МДП------------------------")
 print(round(min(MDP1, MDP2, MDP3, MDP4, MDP5, MDP6)), 2)
