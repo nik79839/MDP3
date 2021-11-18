@@ -6,37 +6,38 @@ def worsening_norm(rastr):
             rastr.AddControl(-1,"")
 
 
-def worsening_U(rastr, node_table):
+def worsening_U(rastr):
+    node_table = rastr.Tables('node')
     kd2 = rastr.step_ut("i")
     uk = 0
     while (kd2 == 0) and (uk == 0):
-        for u in range(0,node_table.size):
-            if node_table.Cols('vras').Z(u)<node_table.Cols('uhom').Z(u)*0.7*1.15:
+        for u in range(0, node_table.size):
+            if node_table.Cols('vras').Z(u) < node_table.Cols('uhom').Z(u)*0.7*1.15:
                 uk = 1
             if uk == 1:
                 break
-        kd2=rastr.step_ut("z")
+        kd2 = rastr.step_ut("z")
         if (kd2 == 0 and rastr.ut_Param(1) == 0 ) or (rastr.ut_Param(2) == 1):
             rastr.AddControl(-1,"")
 
-def worsening_I(rastr, i_dop, vetv_table):
+def worsening_I(rastr, i_dop):
+    vetv_table = rastr.Tables('vetv')
     kd3 = rastr.step_ut("i")
     ik=0
     while (kd3 == 0) and (ik == 0):
         for i in range(0,vetv_table.size):
-            if (vetv_table.Cols('ib').Z(i)>vetv_table.Cols(i_dop).Z(i) and
-            vetv_table.Cols(i_dop).Z(i) !=0)  or \
-            (vetv_table.Cols('ie').Z(i)>vetv_table.Cols(i_dop).Z(i) and
-            vetv_table.Cols(i_dop).Z(i) !=0):
+            if (vetv_table.Cols(i_dop).Z(i) !=0) and (vetv_table.Cols('ib').Z(i)>vetv_table.Cols(i_dop).Z(i) or \
+                                                      vetv_table.Cols('ie').Z(i)>vetv_table.Cols(i_dop).Z(i)):
                 ik = 1
             if ik == 1:
                 break
-        kd3=rastr.step_ut("z")
+        kd3 = rastr.step_ut("z")
         if (kd3 == 0 and rastr.ut_Param(1) == 0 ) or (rastr.ut_Param(2) == 1):
             rastr.AddControl(-1,"")
 
-def faults(rastr, faults, vetv_table, shbl3, k, fault):
+def faults(rastr, faults, shbl3, k, fault):
     rastr.Load(3, r'C:\Users\otrok\Downloads\regime (2).rg2', shbl3)
+    vetv_table = rastr.Tables('vetv')
     for j in range(0, vetv_table.size):
         if (faults[k]['ip'] == vetv_table.Cols('ip').Z(j)) and \
        (faults[k]['iq'] == vetv_table.Cols('iq').Z(j)):
