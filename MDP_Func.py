@@ -1,4 +1,3 @@
-print ("Hello")
 def worsening_norm(rastr):
     kd = rastr.step_ut("i")
     while kd==0:
