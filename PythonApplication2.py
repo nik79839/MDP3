@@ -72,7 +72,7 @@ limit_overflow2 = []
 doavar_overflow = []
 for k in faults.keys():
     fault=0
-    MDP_Func.faults(rastr, faults,  shbl_reg, k, fault)
+    fault=MDP_Func.faults(rastr, faults,  shbl_reg, k, fault)
     MDP_Func.worsening_norm(rastr)
     limit_overflow2.append(abs(sechen_table.Cols('psech').Z(0)))
     limit_overflow3=abs(sechen_table.Cols('psech').Z(0))
@@ -100,7 +100,7 @@ rastr.Load(3, r'C:\Users\otrok\Downloads\regime (2).rg2', shbl_reg)
 limit_overflow3 = []
 doavar_overflow2 = []
 for k in faults.keys():
-    MDP_Func.faults(rastr, faults, shbl_reg, k, fault)
+    fault=MDP_Func.faults(rastr, faults, shbl_reg, k, fault)
     MDP_Func.worsening_U(rastr,1.1)
     limit_overflow3.append(abs(sechen_table.Cols('psech').Z(0)))
     vetv_table.Cols('sta').SetZ(fault, 0)
@@ -129,7 +129,7 @@ rastr.Load(3, r'C:\Users\otrok\Downloads\regime (2).rg2', shbl_reg)
 limit_overflow4 = []
 doavar_overflow3 = []
 for k in faults.keys():
-    MDP_Func.faults(rastr, faults, shbl_reg, k, fault)
+    fault=MDP_Func.faults(rastr, faults, shbl_reg, k, fault)
     MDP_Func.worsening_I(rastr, 'i_dop_r_av')
     limit_overflow4.append(abs(sechen_table.Cols('psech').Z(0)))
     vetv_table.Cols('sta').SetZ(fault, 0)
