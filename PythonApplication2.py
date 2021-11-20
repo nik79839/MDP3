@@ -57,8 +57,8 @@ print("МДП по 1 критерию", MDP1)
 
 #2 критерий по U в нормальном режиме.
 print("----------------КРИТЕРИЙ ПО U В НОРМАЛЬНОМ РЕЖИМЕ-------------------- ")
-rastr.Load(3, r'C:\Users\otrok\Downloads\regime (2).rg2',shbl_reg)
-MDP_Func.worsening_U(rastr,1.15)
+rastr.Load(3, r'C:\Users\otrok\Downloads\regime (2).rg2', shbl_reg)
+MDP_Func.worsening_U(rastr, 1.15)
 if abs(sechen_table.Cols('psech').Z(0)) == limit_overflow:
     print('Предел по напряжениям по 2 критерию не достигнут')
 else:
@@ -72,7 +72,7 @@ limit_overflow2 = []
 doavar_overflow = []
 for k in faults.keys():
     fault=0
-    MDP_Func.faults(rastr, faults, vetv_table, shbl_reg, k, fault)
+    MDP_Func.faults(rastr, faults,  shbl_reg, k, fault)
     MDP_Func.worsening_norm(rastr)
     limit_overflow2.append(abs(sechen_table.Cols('psech').Z(0)))
     limit_overflow3=abs(sechen_table.Cols('psech').Z(0))
@@ -100,7 +100,7 @@ rastr.Load(3, r'C:\Users\otrok\Downloads\regime (2).rg2', shbl_reg)
 limit_overflow3 = []
 doavar_overflow2 = []
 for k in faults.keys():
-    MDP_Func.faults(rastr, faults, vetv_table, shbl_reg, k, fault)
+    MDP_Func.faults(rastr, faults, shbl_reg, k, fault)
     MDP_Func.worsening_U(rastr,1.1)
     limit_overflow3.append(abs(sechen_table.Cols('psech').Z(0)))
     vetv_table.Cols('sta').SetZ(fault, 0)
