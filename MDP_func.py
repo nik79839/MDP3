@@ -38,7 +38,7 @@ def worsening_U(rastr,percent):
 def worsening_I(rastr, i_dop):
     vetv_table = rastr.Tables('vetv')
     kd3 = rastr.step_ut("i")
-    ik=0
+    ik = 0
     while (kd3 == 0) and (ik == 0):
         for i in range(0,vetv_table.size):
             if (vetv_table.Cols(i_dop).Z(i) !=0) and (vetv_table.Cols('ib').Z(i) > vetv_table.Cols(i_dop).Z(i) or \
@@ -65,7 +65,7 @@ def faults(rastr, faults, shbl3, k, fault):
         if (faults[k]['ip'] == vetv_table.Cols('ip').Z(j)) and \
        (faults[k]['iq'] == vetv_table.Cols('iq').Z(j)):
             vetv_table.Cols('sta').SetZ(j,1)
-            fault=j
+            fault = j
             return fault
             break
     rastr.rgm('')
