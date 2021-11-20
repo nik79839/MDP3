@@ -37,11 +37,9 @@ sechen_table = rastr.Tables('sechen')
 grline_table.size = len(flowgate)
 sechen_table.size = 1
 sechen_table.Cols('ns').SetZ(0, 1)
-index = 0
-for k in flowgate.keys():
+for index, k in enumerate(flowgate.keys()):
     grline_table.Cols('ip').SetZ(index, flowgate[k]['ip'])
     grline_table.Cols('iq').SetZ(index, flowgate[k]['iq'])
-    index=index+1
 grline_table.Cols('ns').SetZ(0, 1)
 print("Начальный переток в КС-", round(sechen_table.Cols('psech').Z(0), 2))
 #Утяжеляем.
@@ -71,11 +69,11 @@ faults = json.load(open(r'C:\Users\otrok\Downloads\faults.json', encoding = 'utf
 limit_overflow2 = []
 doavar_overflow = []
 for k in faults.keys():
-    fault=0
-    fault=MDP_Func.faults(rastr, faults,  shbl_reg, k, fault)
+    fault = 0
+    fault = MDP_Func.faults(rastr, faults,  shbl_reg, k, fault)
     MDP_Func.worsening_norm(rastr)
     limit_overflow2.append(abs(sechen_table.Cols('psech').Z(0)))
-    limit_overflow3=abs(sechen_table.Cols('psech').Z(0))
+    limit_overflow3 = abs(sechen_table.Cols('psech').Z(0))
     rastr.Load(3, r'C:\Users\otrok\Downloads\regime (2).rg2',shbl_reg)
     vetv_table.Cols('sta').SetZ(fault, 1)
     rastr.rgm('')
