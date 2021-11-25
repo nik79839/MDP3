@@ -1,10 +1,5 @@
 def worsening_norm(rastr):
-    kd = rastr.step_ut("i")
-    while kd == 0:
-        kd = rastr.step_ut("z")
-        if (kd == 0 and rastr.ut_Param(1) == 0 ) or (rastr.ut_Param(2) == 1):
-            rastr.AddControl(-1,"")
-            
+    
    """This function makes the mode heavier to obtain the maximum overflow
 
     Parameters:
@@ -12,8 +7,21 @@ def worsening_norm(rastr):
 
    """
 
+    kd = rastr.step_ut("i")
+    while kd == 0:
+        kd = rastr.step_ut("z")
+              
 
-def worsening_U(rastr,percent):
+def worsening_U(rastr, percent):
+    
+   """This function makes the mode heavier until the voltages go beyond the set limits.
+
+    Parameters:
+    rastr (rastr): COM object
+    percent (int): Sets the stock percentage
+
+   """   
+    
     node_table = rastr.Tables('node')
     kd2 = rastr.step_ut("i")
     uk = 0
@@ -24,18 +32,19 @@ def worsening_U(rastr,percent):
             if uk == 1:
                 break
         kd2 = rastr.step_ut("z")
-        if (kd2 == 0 and rastr.ut_Param(1) == 0 ) or (rastr.ut_Param(2) == 1):
-            rastr.AddControl(-1,"")
 
-    """This function makes the mode heavier until the voltages go beyond the set limits.
+         
+            
+def worsening_I(rastr, i_dop):
+    
+   """This function makes the mode heavier until the currents go beyond the set limits.
 
     Parameters:
     rastr (rastr): COM object
-    percent (int): Sets the stock percentage
+    i_dop (string): Column name with specified current limit
 
-   """         
-            
-def worsening_I(rastr, i_dop):
+   """
+    
     vetv_table = rastr.Tables('vetv')
     kd3 = rastr.step_ut("i")
     ik = 0
@@ -47,18 +56,23 @@ def worsening_I(rastr, i_dop):
             if ik == 1:
                 break
         kd3 = rastr.step_ut("z")
-        if (kd3 == 0 and rastr.ut_Param(1) == 0 ) or (rastr.ut_Param(2) == 1):
-            rastr.AddControl(-1,"")
-            
-   """This function makes the mode heavier until the currents go beyond the set limits.
+           
+
+def faults(rastr, faults[k], shbl3):
+    
+   """This function disconnects the branch according to the faults file
 
     Parameters:
     rastr (rastr): COM object
-    i_dop (string): Column name with specified current limit
+    faults[k] (string): name of fault
+    shbl3 (string): template for creating a Rastrwin3 file
+    fault (int): line to be disconnected
+    
+    Return:
+    fault (int): line to be disconnected
 
    """
-
-def faults(rastr, faults, shbl3, k, fault):
+    
     rastr.Load(3, r'C:\Users\otrok\Downloads\regime (2).rg2', shbl3)
     vetv_table = rastr.Tables('vetv')
     for j in range(0, vetv_table.size):
@@ -70,18 +84,7 @@ def faults(rastr, faults, shbl3, k, fault):
             break
     rastr.rgm('')
 
-    """This function disconnects the branch according to the faults file
-
-    Parameters:
-    rastr (rastr): COM object
-    faults (dict): dictionary where keys are faults
-    shbl3 (string): template for creating a Rastrwin3 file
-    fault (int): line to be disconnected
-    
-    Return:
-    fault (int): line to be disconnected
-
-   """
+   
 
 
 
