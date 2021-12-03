@@ -94,8 +94,8 @@ rastr.Load(3, r'C:\Users\otrok\Downloads\regime (2).rg2', shbl_reg)
 limit_overflow3 = []
 doavar_overflow2 = []
 for k in faults.keys():
-    fault = mdp_func.faults(rastr, faults, shbl_reg)
-    mdp_func.worsening_U(rastr,1.1)
+    fault = mdp_func.faults(rastr, faults[k], shbl_reg)
+    mdp_func.worsening_U(rastr, 1.1)
     limit_overflow3.append(abs(sechen_table.Cols('psech').Z(0)))
     vetv_table.Cols('sta').SetZ(fault, 0)
     rastr.rgm('')
