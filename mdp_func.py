@@ -58,7 +58,7 @@ def worsening_I(rastr, i_dop):
         kd3 = rastr.step_ut("z")
            
 
-def faults(rastr, faults[k], shbl3):
+def faults(rastr, faults, shbl3):
     
    """This function disconnects the branch according to the faults file
 
@@ -76,9 +76,9 @@ def faults(rastr, faults[k], shbl3):
     rastr.Load(3, r'C:\Users\otrok\Downloads\regime (2).rg2', shbl3)
     vetv_table = rastr.Tables('vetv')
     for j in range(0, vetv_table.size):
-        if (faults[k]['ip'] == vetv_table.Cols('ip').Z(j)) and \
-       (faults[k]['iq'] == vetv_table.Cols('iq').Z(j)):
-            vetv_table.Cols('sta').SetZ(j,1)
+        if (faults['ip'] == vetv_table.Cols('ip').Z(j)) and \
+       (faults['iq'] == vetv_table.Cols('iq').Z(j)):
+            vetv_table.Cols('sta').SetZ(j, 1)
             fault = j
             return fault
             break
