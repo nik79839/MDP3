@@ -1,3 +1,4 @@
+import mdp_func
 def worsening_norm(rastr):
     
    """This function makes the mode heavier to obtain the maximum overflow
@@ -116,6 +117,86 @@ def setFlowgate(rastr, flowgate):
     grline_table.Cols('ns').SetZ(0, 1)
     rastr.rgm('')
 
+def secondCriterion(rastr, faults, shbl_reg):
+    
+    """Second criterion
 
+    Parameters:
+    rastr (rastr): COM object
+    faults (dataframe): faults
+    shbl_reg (string): shablon
+    
+    Return:
+    doavar_overflow (list): list of overflow
+
+   """
+    
+    sechen_table = rastr.Tables('sechen')
+    doavar_overflow = []
+    for k in faults.keys():
+        fault = mdp_func.faults(rastr, faults[k],  shbl_reg)
+        mdp_func.worsening_norm(rastr)
+        limit_overflow2=(abs(sechen_table.Cols('psech').Z(0)))
+        rastr.Load(3, r'C:\Users\otrok\Downloads\regime (2).rg2', shbl_reg)
+        vetv_table.Cols('sta').SetZ(fault, faults[k]['sta'])
+        rastr.rgm('')
+        kd = rastr.step_ut("index")
+        while (kd == 0) and abs(sechen_table.Cols('psech').Z(0)) < 0.92*limit_overflow2:
+            kd = rastr.step_ut("z")
+        vetv_table.Cols('sta').SetZ(fault, 1-faults[k]['sta'])
+        rastr.rgm('')
+        doavar_overflow.append(abs(sechen_table.Cols('psech').Z(0)))
+    doavar_overflow=[round(v, 2) for v in doavar_overflow]
+    return doavar_overflow
+
+def fourthCriterion(rastr, faults, shbl_reg):
+    
+    """Fourth criterion
+
+    Parameters:
+    rastr (rastr): COM object
+    faults (dataframe): faults
+    shbl_reg (string): shablon
+    
+    Return:
+    doavar_overflow (list): list of overflow
+
+   """
+    vetv_table = rastr.Tables('vetv')
+    doavar_overflow = []
+    for k in faults.keys():
+        fault = mdp_func.faults(rastr, faults[k], shbl_reg)
+        vetv_table.Cols('sta').SetZ(fault, faults[k]['sta'])
+        mdp_func.worsening_U(rastr, 1.1)
+        vetv_table.Cols('sta').SetZ(fault, 1-faults[k]['sta'])
+        rastr.rgm('')
+        doavar_overflow.append(abs(sechen_table.Cols('psech').Z(0)))
+    doavar_overflow = [round(v, 2) for v in doavar_overflow]
+    return doavar_overflow
+
+def sixthCriterion(rastr, faults, shbl_reg):
+    
+    """Fourth criterion
+
+    Parameters:
+    rastr (rastr): COM object
+    faults (dataframe): faults
+    shbl_reg (string): shablon
+    
+    Return:
+    doavar_overflow (list): list of overflow
+
+   """
+    vetv_table = rastr.Tables('vetv')
+    doavar_overflow = []
+    for k in faults.keys():
+        fault = mdp_func.faults(rastr, faults[k], shbl_reg)
+        vetv_table.Cols('sta').SetZ(fault, faults[k]['sta'])
+        mdp_func.worsening_I(rastr, 'i_dop_r_av')
+        vetv_table.Cols('sta').SetZ(fault, 1-faults[k]['sta'])
+        rastr.rgm('')
+        doavar_overflow.append(abs(sechen_table.Cols('psech').Z(0)))
+    doavar_overflow = [round(v, 2) for v in doavar_overflow]
+    return doavar_overflow
 
 
