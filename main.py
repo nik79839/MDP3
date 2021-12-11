@@ -7,8 +7,6 @@ import math
 import pandas as pd
 import mdp_func
 from pprint import pprint
-# Считываем файл утяжеления и разбиваем по стобцам.
-vector = pd.read_csv(r'C:\Users\otrok\Downloads\vector.csv', delimiter = ',')
 # Читаем режим и задаем шаблоны.
 rastr = win32com.client.Dispatch('Astra.Rastr')
 file_rgm="C:\Users\otrok\Downloads\regime (2).rg2"
@@ -22,27 +20,13 @@ ut_table = rastr.Tables('ut_node')
 node_table = rastr.Tables('node')
 vetv_table = rastr.Tables('vetv')
 # Задаем параметры утяжеления.
-ut_table.size = len(vector)
-for index in range(0, len(vector)):
-    ut_table.Cols('ny').SetZ(index, vector['node'][index])
-    ut_table.Cols('tg').SetZ(index, vector['tg'][index])
-    if vector['variable'][index] == 'pn':
-        ut_table.Cols('pn').SetZ(index, vector['value'][index])
-    else:
-        ut_table.Cols('pg').SetZ(index, vector['value'][index])
+vector = pd.read_csv(r'C:\Users\otrok\Downloads\vector.csv', delimiter = ',')
+mdp_func.setVector(rastr, vector)
 # Задаем сечения.
 flowgate = json.load(open(r'C:\Users\otrok\Downloads\flowgate.json',
                           encoding='utf-8'))
-grline_table = rastr.Tables('grline')
 sechen_table = rastr.Tables('sechen')
-grline_table.size = len(flowgate)
-sechen_table.size = 1
-sechen_table.Cols('ns').SetZ(0, 1)
-for index, k in enumerate(flowgate.keys()):
-    grline_table.Cols('ip').SetZ(index, flowgate[k]['ip'])
-    grline_table.Cols('iq').SetZ(index, flowgate[k]['iq'])
-grline_table.Cols('ns').SetZ(0, 1)
-rastr.rgm('')
+mdp_func.setFlowgate(rastr, flowgate)
 print("Начальный переток в КС-", round(sechen_table.Cols('psech').Z(0), 2))
 # Утяжеляем.
 mdp_func.worsening_norm(rastr)
@@ -130,7 +114,7 @@ for k in faults.keys():
     vetv_table.Cols('sta').SetZ(fault, 1-faults[k]['sta'])
     rastr.rgm('')
     doavar_overflow3.append(abs(sechen_table.Cols('psech').Z(0)))
-limit_overflow3 = [round(v, 2) for v in limit_overflow3]
+limit_overflow4 = [round(v, 2) for v in limit_overflow4]
 doavar_overflow3 = [round(v, 2) for v in doavar_overflow3]
 mdp6 = min(doavar_overflow3) - nereg
 print("Послеаварийный переток I-", limit_overflow4)
