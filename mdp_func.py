@@ -75,7 +75,47 @@ def faults(rastr, faults, shbl3):
             vetv_table.Cols('sta').SetZ(j, 1)
             return j
 
-   
+def setVector(rastr, vector):
+    
+    """This function sets the weighting vector
+
+    Parameters:
+    rastr (rastr): COM object
+    vector (dataframe): weighting vector
+
+   """
+    
+    ut_table = rastr.Tables('ut_node')
+    ut_table.size = len(vector)
+    for index in range(0,len(vector)):
+        ut_table.Cols('ny').SetZ(index, vector['node'][index])
+        ut_table.Cols('tg').SetZ(index, vector['tg'][index])
+        if vector['variable'][index] == 'pn':
+            ut_table.Cols('pn').SetZ(index, vector['value'][index])
+        else:
+            ut_table.Cols('pg').SetZ(index, vector['value'][index])
+
+def setFlowgate(rastr, flowgate):
+    
+    """This function sets the flowgate
+
+    Parameters:
+    rastr (rastr): COM object
+    flowgate (dict): weighting vector
+
+   """
+    
+    grline_table = rastr.Tables('grline')
+    sechen_table = rastr.Tables('sechen')
+    grline_table.size = len(flowgate)
+    sechen_table.size = 1
+    sechen_table.Cols('ns').SetZ(0, 1)
+    for index, k in enumerate(flowgate.keys()):
+        grline_table.Cols('ip').SetZ(index, flowgate[k]['ip'])
+        grline_table.Cols('iq').SetZ(index, flowgate[k]['iq'])
+    grline_table.Cols('ns').SetZ(0, 1)
+    rastr.rgm('')
+
 
 
 
