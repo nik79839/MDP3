@@ -50,24 +50,7 @@ print("МДП по 2 критерию-", abs(sechen_table.Cols('psech').Z(0)) - 
 # 3 критерий по P в послеаварийном режиме.
 print("----------------КРИТЕРИЙ ПО СТАТИКЕ В ПАР-------------------- ")
 faults = json.load(open(r'C:\Users\otrok\Downloads\faults.json', encoding = 'utf-8'))
-limit_overflow2 = []
-doavar_overflow = []
-for k in faults.keys():
-    fault = mdp_func.faults(rastr, faults[k],  shbl_reg)
-    mdp_func.worsening_norm(rastr)
-    limit_overflow2.append(abs(sechen_table.Cols('psech').Z(0)))
-    rastr.Load(3, r'C:\Users\otrok\Downloads\regime (2).rg2', shbl_reg)
-    vetv_table.Cols('sta').SetZ(fault, faults[k]['sta'])
-    rastr.rgm('')
-    kd = rastr.step_ut("index")
-    while (kd == 0) and abs(sechen_table.Cols('psech').Z(0)) < 0.92*limit_overflow2[-1]:
-        kd = rastr.step_ut("z")
-    vetv_table.Cols('sta').SetZ(fault, 1-faults[k]['sta'])
-    rastr.rgm('')
-    doavar_overflow.append(abs(sechen_table.Cols('psech').Z(0)))
-limit_overflow2 = [round(v, 2) for v in limit_overflow2]
-doavar_overflow = [round(v, 2) for v in doavar_overflow]
-print("Послеаварийный переток в КС-", limit_overflow2)
+doavar_overflow = mdp_func.secondCriterion(rastr, faults, shbl_reg)
 print("Доаварийный переток в КС-", doavar_overflow)
 mdp3 = min(doavar_overflow) - nereg
 print("МДП по критерию P в ПАР -", mdp3 )
@@ -75,20 +58,8 @@ print("МДП по критерию P в ПАР -", mdp3 )
 # 4 критерий по U в ПАР.
 print("----------------КРИТЕРИЙ ПО U В ПАР-------------------- ")
 rastr.Load(3, file_rgm, shbl_reg)
-limit_overflow3 = []
-doavar_overflow2 = []
-for k in faults.keys():
-    fault = mdp_func.faults(rastr, faults[k], shbl_reg)
-    vetv_table.Cols('sta').SetZ(fault, faults[k]['sta'])
-    mdp_func.worsening_U(rastr, 1.1)
-    limit_overflow3.append(abs(sechen_table.Cols('psech').Z(0)))
-    vetv_table.Cols('sta').SetZ(fault, 1-faults[k]['sta'])
-    rastr.rgm('')
-    doavar_overflow2.append(abs(sechen_table.Cols('psech').Z(0)))
-limit_overflow3 = [round(v, 2) for v in limit_overflow2]
-doavar_overflow2 = [round(v, 2) for v in doavar_overflow2]
+doavar_overflow2 = mdp_func.fourthCriterion(rastr, faults, shbl_reg)
 mdp4 = min(doavar_overflow2) - nereg
-print("Послеаварийный переток U-", limit_overflow3)
 print("Доаварийный переток U-", doavar_overflow2)
 print("МДП по критерию U в ПАР -", min(doavar_overflow2) - nereg )
 
@@ -104,20 +75,8 @@ print("МДП по 5 критерию-",abs(sechen_table.Cols('psech').Z(0)) - n
 # 6 критерий по I в ПАР.
 print("----------------КРИТЕРИЙ ПО I В ПАР-------------------- ")
 rastr.Load(3, file_rgm, shbl_reg)
-limit_overflow4 = []
-doavar_overflow3 = []
-for k in faults.keys():
-    fault = mdp_func.faults(rastr, faults[k], shbl_reg)
-    vetv_table.Cols('sta').SetZ(fault, faults[k]['sta'])
-    mdp_func.worsening_I(rastr, 'i_dop_r_av')
-    limit_overflow4.append(abs(sechen_table.Cols('psech').Z(0)))
-    vetv_table.Cols('sta').SetZ(fault, 1-faults[k]['sta'])
-    rastr.rgm('')
-    doavar_overflow3.append(abs(sechen_table.Cols('psech').Z(0)))
-limit_overflow4 = [round(v, 2) for v in limit_overflow4]
-doavar_overflow3 = [round(v, 2) for v in doavar_overflow3]
+doavar_overflow3 = mdp_func.sixthCriterion(rastr, faults, shbl_reg)
 mdp6 = min(doavar_overflow3) - nereg
-print("Послеаварийный переток I-", limit_overflow4)
 print("Доаварийный переток I-", doavar_overflow3)
 print("МДП по критерию I в ПАР -", min(doavar_overflow3) - nereg )
 print("-----------------------РЕЗУЛЬТИРУЮЩИЙ МДП------------------------")
