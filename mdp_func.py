@@ -162,6 +162,7 @@ def fourthCriterion(rastr, faults, shbl_reg):
     doavar_overflow (list): list of overflow
 
    """
+    sechen_table = rastr.Tables('sechen')
     vetv_table = rastr.Tables('vetv')
     doavar_overflow = []
     for k in faults.keys():
@@ -187,6 +188,7 @@ def sixthCriterion(rastr, faults, shbl_reg):
     doavar_overflow (list): list of overflow
 
    """
+    sechen_table = rastr.Tables('sechen')
     vetv_table = rastr.Tables('vetv')
     doavar_overflow = []
     for k in faults.keys():
