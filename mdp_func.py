@@ -2,7 +2,7 @@ import mdp_func
 file_rgm=r'C:\Users\otrok\Downloads\regime (2).rg2'
 def worsening_norm(rastr):
     
-   """This function makes the mode heavier to obtain the maximum overflow
+    """This function makes the mode heavier to obtain the maximum overflow
 
     Parameters:
     rastr (rastr): COM object
@@ -16,7 +16,7 @@ def worsening_norm(rastr):
 
 def worsening_U(rastr, percent):
     
-   """This function makes the mode heavier until the voltages go beyond the set limits.
+    """This function makes the mode heavier until the voltages go beyond the set limits.
 
     Parameters:
     rastr (rastr): COM object
@@ -36,7 +36,7 @@ def worsening_U(rastr, percent):
             
 def worsening_I(rastr, i_dop):
     
-   """This function makes the mode heavier until the currents go beyond the set limits.
+    """This function makes the mode heavier until the currents go beyond the set limits.
 
     Parameters:
     rastr (rastr): COM object
@@ -57,7 +57,7 @@ def worsening_I(rastr, i_dop):
 
 def faults(rastr, faults, shbl3):
     
-   """This function disconnects the branch according to the faults file
+    """This function disconnects the branch according to the faults file
 
     Parameters:
     rastr (rastr): COM object
@@ -75,7 +75,7 @@ def faults(rastr, faults, shbl3):
         if (faults['ip'] == vetv_table.Cols('ip').Z(j)) and \
        (faults['iq'] == vetv_table.Cols('iq').Z(j) and \
        faults['np']==vetv_table.Cols('np').Z(j)):
-            vetv_table.Cols('sta').SetZ(j, faults[k]['sta'])
+            vetv_table.Cols('sta').SetZ(j, faults['sta'])
             return j
 
 def set_vector(rastr, vector):
@@ -133,6 +133,7 @@ def second_criterion(rastr, faults, shbl_reg):
 
    """
     
+    vetv_table = rastr.Tables('vetv')
     sechen_table = rastr.Tables('sechen')
     doavar_overflow = []
     for k in faults.keys():
