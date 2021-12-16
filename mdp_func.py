@@ -1,4 +1,5 @@
 import mdp_func
+file_rgm=r'C:\Users\otrok\Downloads\regime (2).rg2'
 def worsening_norm(rastr):
     
    """This function makes the mode heavier to obtain the maximum overflow
@@ -46,10 +47,10 @@ def worsening_I(rastr, i_dop):
     vetv_table = rastr.Tables('vetv')
     kd3 = rastr.step_ut("i")
     while (kd3 == 0):
-        for i in range(0,vetv_table.size):
-            if (vetv_table.Cols(i_dop).Z(i) !=0) and (vetv_table.Cols('ib').Z(i) > \
-                                                      vetv_table.Cols(i_dop).Z(i) or \
-                                                      vetv_table.Cols('ie').Z(i) > vetv_table.Cols(i_dop).Z(i)):
+        for i in range(0, vetv_table.size):
+            idop = vetv_table.Cols(i_dop).Z(i)
+            if (idop !=0) and (vetv_table.Cols('ib').Z(i) > idop or \
+                               vetv_table.Cols('ie').Z(i) > idop):
                 return
         kd3 = rastr.step_ut("z")
            
@@ -68,15 +69,16 @@ def faults(rastr, faults, shbl3):
 
    """
     
-    rastr.Load(3, r'C:\Users\otrok\Downloads\regime (2).rg2', shbl3)
+    rastr.Load(3, file_rgm, shbl3)
     vetv_table = rastr.Tables('vetv')
     for j in range(0, vetv_table.size):
         if (faults['ip'] == vetv_table.Cols('ip').Z(j)) and \
-       (faults['iq'] == vetv_table.Cols('iq').Z(j)):
-            vetv_table.Cols('sta').SetZ(j, 1)
+       (faults['iq'] == vetv_table.Cols('iq').Z(j) and \
+       faults['np']==vetv_table.Cols('np').Z(j)):
+            vetv_table.Cols('sta').SetZ(j, faults[k]['sta'])
             return j
 
-def setVector(rastr, vector):
+def set_vector(rastr, vector):
     
     """This function sets the weighting vector
 
@@ -96,7 +98,7 @@ def setVector(rastr, vector):
         else:
             ut_table.Cols('pg').SetZ(index, vector['value'][index])
 
-def setFlowgate(rastr, flowgate):
+def set_flowgate(rastr, flowgate):
     
     """This function sets the flowgate
 
@@ -117,7 +119,7 @@ def setFlowgate(rastr, flowgate):
     grline_table.Cols('ns').SetZ(0, 1)
     rastr.rgm('')
 
-def secondCriterion(rastr, faults, shbl_reg):
+def second_criterion(rastr, faults, shbl_reg):
     
     """Second criterion
 
@@ -137,7 +139,7 @@ def secondCriterion(rastr, faults, shbl_reg):
         fault = mdp_func.faults(rastr, faults[k],  shbl_reg)
         mdp_func.worsening_norm(rastr)
         limit_overflow2=(abs(sechen_table.Cols('psech').Z(0)))
-        rastr.Load(3, r'C:\Users\otrok\Downloads\regime (2).rg2', shbl_reg)
+        rastr.Load(3, file_rgm, shbl_reg)
         vetv_table.Cols('sta').SetZ(fault, faults[k]['sta'])
         rastr.rgm('')
         kd = rastr.step_ut("index")
@@ -149,7 +151,7 @@ def secondCriterion(rastr, faults, shbl_reg):
     doavar_overflow=[round(v, 2) for v in doavar_overflow]
     return doavar_overflow
 
-def fourthCriterion(rastr, faults, shbl_reg):
+def fourth_criterion(rastr, faults, shbl_reg):
     
     """Fourth criterion
 
@@ -175,9 +177,9 @@ def fourthCriterion(rastr, faults, shbl_reg):
     doavar_overflow = [round(v, 2) for v in doavar_overflow]
     return doavar_overflow
 
-def sixthCriterion(rastr, faults, shbl_reg):
+def sixth_criterion(rastr, faults, shbl_reg):
     
-    """Fourth criterion
+    """Sixth criterion
 
     Parameters:
     rastr (rastr): COM object
