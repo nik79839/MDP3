@@ -8,7 +8,7 @@ import pandas as pd
 import mdp_func
 # Читаем режим и задаем шаблоны.
 rastr = win32com.client.Dispatch('Astra.Rastr')
-file_rgm="C:\Users\otrok\Downloads\regime (2).rg2"
+file_rgm=r'C:\Users\otrok\Downloads\regime (2).rg2'
 shbl_ut = "C:\Program Files (x86)\RastrWin3\RastrWin3\SHABLON\траектория утяжеления.ut2"
 shbl_sech = "C:\Program Files (x86)\RastrWin3\RastrWin3\SHABLON\сечения.sch"
 shbl_reg = "C:\Program Files (x86)\RastrWin3\RastrWin3\SHABLON\режим.rg2"
@@ -79,4 +79,4 @@ mdp6 = min(doavar_overflow3) - nereg
 print("Доаварийный переток I-", doavar_overflow3)
 print("МДП по критерию I в ПАР -", mdp6)
 print("-----------------------РЕЗУЛЬТИРУЮЩИЙ МДП------------------------")
-print(round(min(mdp1, mdp2, mdp3, mdp4, mdp5, mdp6)), 2)
+print(round(min(mdp1, mdp2, mdp3, mdp4, mdp5, mdp6), 2))
